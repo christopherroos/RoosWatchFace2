@@ -11,33 +11,17 @@ var UI = require('ui');
 var Vector2 = require('vector2');
 var ajax = require('ajax');
 
-var hue = require('jshue').jsHue();
-hue.discover(
-    function(bridges) {
-        if(bridges.length === 0) {
-            console.log('No bridges found. :(');
-        }
-        else {
-            bridges.forEach(function(b) {
-                console.log('Bridge found at IP address %s.', b.internalipaddress);
-                var user = hue.bridge(b.internalipaddress).user('foo');
-                user.create('foo application', 
-                            function(res){
-                              console.log('HUE SUCCESS: ');
-                              console.log(JSON.stringify(res));
-                            },
-                            function(err){
-                              console.log('HUE ERROR:');
-                              console.log(err);
-                            }
-                           );
-            });
-        }
-    },
-    function(error) {
-        console.error(error.message);
-    }
-);
+var hueIP = '192.168.0.18';
+var hueUser = 'newdeveloper';
+var hueApiCall = 'http://'+hueIP+'/api/'+hueUser;
+
+var hueMenuColor = {
+      backgroundColor: 'black',
+      textColor: 'blue',
+      highlightBackgroundColor: 'blue',
+      highlightTextColor: 'black',
+      sections: []
+    };
 
 var coordinates = false;
 var locationinfo = false;
@@ -258,28 +242,30 @@ var weatherObj = weatherObj || {
   }
 };
 // End: weather object
+
+
 var hueSelectLightsObj = hueSelectLightsObj || {
     init: function(){
-    this.Menu = new UI.Menu({
-      backgroundColor: 'black',
-      textColor: 'blue',
-      highlightBackgroundColor: 'blue',
-      highlightTextColor: 'black',
-      compositing: 'set',
-      sections: []
-    });
+    this.Menu = new UI.Menu(hueMenuColor);
     this.Menu.on('select', function(e) {
       hueSelectLightsObj.selectItem(e);
     });
     this.Menu.on('hide', function(e){
-      console.log('Back');
-      console.log(JSON.stringify(hueSelectLightsObj.allLights));
+      var newGroup = {name:"Group1", lights: []};
       for (var key in hueSelectLightsObj.allLights){
         console.log(JSON.stringify(hueSelectLightsObj.allLights[key]));
         if (hueSelectLightsObj.allLights[key].added){
           console.log('added :)');
+          newGroup.lights.push( hueSelectLightsObj.allLights[key].lightNb );
         }
       }
+      console.log(JSON.stringify(newGroup));
+      var callUrl = hueApiCall+'/groups/';
+      ajax({ url: callUrl, method: 'post', data:newGroup, type: 'json'},
+        function(data) {
+          console.log(JSON.stringify(data));
+        });
+
     });
     this.updateSections();
     this.Menu.show();
@@ -290,8 +276,8 @@ var hueSelectLightsObj = hueSelectLightsObj || {
         //icon: 'images/menu_icon.png',
         subtitle: 'Set levels for lights'
       }];
-    var callUrl = 'http://192.168.0.18/api/newdeveloper/lights/';
-    ajax({ url: callUrl, method: 'get', type: 'json'},
+    //var callUrl = hueApiCall+'/lights/';
+    ajax({ url: hueApiCall+'/lights/', method: 'get', type: 'json'},
         function(data) {
           console.log(JSON.stringify(data));
           for (var key in data) {
@@ -328,13 +314,7 @@ var hueSelectLightsObj = hueSelectLightsObj || {
 };
 var hueMenuObj = hueMenuObj || {
   init: function(){
-    this.Menu = new UI.Menu({
-      backgroundColor: 'black',
-      textColor: 'blue',
-      highlightBackgroundColor: 'blue',
-      highlightTextColor: 'black',
-      sections: []
-    });
+    this.Menu = new UI.Menu(hueMenuColor);
     this.Menu.on('select', function(e) {
       hueMenuObj.selectItem(e);
     });
@@ -343,16 +323,49 @@ var hueMenuObj = hueMenuObj || {
   },
   updateSections: function(){
     this.allLights = [{
-        title: 'Hue Settings',
-        icon: 'images/menu_icon.png',
-        subtitle: 'Setup your bridge'
+        title: 'Add Group',
+        //icon: 'images/menu_icon.png',
+        subtitle: 'Select lights',
+        action: function(){ hueSelectLightsObj.init(); }
       }];
+    ajax({ url: hueApiCall+'/groups/', method: 'get', type: 'json'},
+         function(data){
+           for (var key in data){
+             console.log(JSON.stringify(data[key]));           
+             var thisGroup = {
+               title: data[key].name,
+               subtitle: (data[key].action.on ? "Turn Off" : "Turn On"),
+               on: data[key].action.on,
+               groupID: key,
+               action: function(e){
+                 console.log(e.item.on);
+                 var nextState = (e.item.on) ? false : true;
+                 console.log(nextState);
+                 hueMenuObj.Menu.item(e.sectionIndex, e.itemIndex, { on: nextState, subtitle: (nextState ? "Turn Off" : "Turn On") } );
+                 ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":255,"sat":50,"hue":1000}, method: 'put', type: 'json'},
+                      function(data) {
+                      });
+               }
+             };
+             hueMenuObj.allLights.push(thisGroup);
+           }
+           hueMenuObj.Menu.items(0, hueMenuObj.allLights);
+         });
     this.Menu.items(0, this.allLights);
   },
   selectItem: function(e){
-    if (e.itemIndex===0){
-      hueSelectLightsObj.init();
-    }
+    e.item.action(e);
+  }
+};
+
+var hueGroupSettingObj = hueGroupSettingObj || {
+    init: function(){
+    this.Menu = new UI.Menu(hueMenuColor);
+    this.Menu.on('select', function(e) {
+      hueMenuObj.selectItem(e);
+    });
+    this.updateSections();
+    this.Menu.show();
   }
 };
 
@@ -385,7 +398,7 @@ main.on('longClick', 'up', function(e) {
   });
   menu.on('select', function(e) {
     if (e.itemIndex==2){
-      var callUrl = 'http://192.168.0.18/api/newdeveloper/lights/'+e.item.lightNb+'/state';
+      var callUrl = hueApiCall+'/lights/'+e.item.lightNb+'/state';
 
       ajax({ url: callUrl, method: 'put', data:{"on":e.item.state}, type: 'json'},
         function(data) {
