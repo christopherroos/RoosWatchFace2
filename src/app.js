@@ -287,7 +287,7 @@ var hueSelectLightsObj = hueSelectLightsObj || {
   updateSections: function(){
     this.allLights = [{
         title: 'Group Settings',
-        icon: 'images/menu_icon.png',
+        //icon: 'images/menu_icon.png',
         subtitle: 'Set levels for lights'
       }];
     var callUrl = 'http://192.168.0.18/api/newdeveloper/lights/';
@@ -297,7 +297,8 @@ var hueSelectLightsObj = hueSelectLightsObj || {
           for (var key in data) {
             var curLight = {
               title: decodeURIComponent(data[key].name),
-              subtitle: ' ',
+              icon: 'images/pebble-checkmark-off.png',
+              //subtitle: ' ',
               lightNb: key,
               added: false,
             };
@@ -318,9 +319,9 @@ var hueSelectLightsObj = hueSelectLightsObj || {
       //  });
       console.log(JSON.stringify(e.item));
       if (e.item.added){
-        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { subtitle: ' ', icon: 'images/pebble-checkmark-off.png', added: false } );
+        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-off.png', added: false } );
       }else{
-        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { subtitle: 'Added', icon: 'images/pebble-checkmark-on.png', added: true } );
+        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-on.png', added: true } );
       }      
     }
   }
