@@ -1,0 +1,147 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        "location"
+    ],
+    "companyName": "diverse@roosonline.dk",
+    "longName": "RoosWatchFace2",
+    "projectType": "pebblejs",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menu_icon.png",
+                "menuIcon": true,
+                "name": "IMAGE_MENU_ICON",
+                "type": "png"
+            },
+            {
+                "file": "images/logo_splash.png",
+                "name": "IMAGE_LOGO_SPLASH",
+                "type": "png"
+            },
+            {
+                "file": "images/tile_splash.png",
+                "name": "IMAGE_TILE_SPLASH",
+                "type": "png"
+            },
+            {
+                "file": "fonts/UbuntuMono-Regular.ttf",
+                "name": "MONO_FONT_14",
+                "type": "font"
+            },
+            {
+                "file": "images/pebble-checkmark-on.png",
+                "name": "IMAGES_PEBBLE_CHECKMARK_ON_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/pebble-checkmark-off.png",
+                "name": "IMAGES_PEBBLE_CHECKMARK_OFF_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/pebble-bgnd1.png",
+                "name": "IMAGES_PEBBLE_BGND1_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/50n.png",
+                "name": "IMAGES_50N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/50d.png",
+                "name": "IMAGES_50D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/13n.png",
+                "name": "IMAGES_13N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/13d.png",
+                "name": "IMAGES_13D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/11d.png",
+                "name": "IMAGES_11D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/11n.png",
+                "name": "IMAGES_11N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/10n.png",
+                "name": "IMAGES_10N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/10d.png",
+                "name": "IMAGES_10D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/09n.png",
+                "name": "IMAGES_09N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/09d.png",
+                "name": "IMAGES_09D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/04n.png",
+                "name": "IMAGES_04N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/04d.png",
+                "name": "IMAGES_04D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/03n.png",
+                "name": "IMAGES_03N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/03d.png",
+                "name": "IMAGES_03D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/02n.png",
+                "name": "IMAGES_02N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/02d.png",
+                "name": "IMAGES_02D_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/01n.png",
+                "name": "IMAGES_01N_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/01d.png",
+                "name": "IMAGES_01D_PNG",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "RoosWatchFace2",
+    "uuid": "1974a766-d5a3-42c8-b17b-a588a355ccf6",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
