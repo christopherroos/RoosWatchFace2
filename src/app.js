@@ -258,11 +258,15 @@ var hueSelectLightsObj = hueSelectLightsObj || {
           newGroup.lights.push( hueSelectLightsObj.allLights[key].lightNb );
         }
       }
+      
       console.log(JSON.stringify(newGroup));
+      
+      newGroup.name = "Lights: "+ newGroup.lights.join();
       var callUrl = hueApiCall+'/groups/';
       ajax({ url: callUrl, method: 'post', data:newGroup, type: 'json'},
         function(data) {
           console.log(JSON.stringify(data));
+          hueMenuObj.updateSections();
         });
 
     });
@@ -323,6 +327,15 @@ var hueMenuObj = hueMenuObj || {
     this.Menu.on('select', function(e) {
       hueMenuObj.selectItem(e);
     });
+    this.Menu.on('longSelect', function(e){
+      console.log(JSON.stringify(e.item));
+      // Delete current group (groupID);
+      ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/', method: 'delete', type: 'json'},
+        function(data) {
+          console.log(JSON.stringify(data));
+          hueMenuObj.updateSections();
+        });
+    });
     this.updateSections();
     this.Menu.show();
   },
@@ -347,13 +360,17 @@ var hueMenuObj = hueMenuObj || {
                  var nextState = (e.item.on) ? false : true;
                  console.log(nextState);
                  hueMenuObj.Menu.item(e.sectionIndex, e.itemIndex, { on: nextState, subtitle: (nextState ? "Turn Off" : "Turn On") } );
-                 ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":255,"sat":50,"hue":1000}, method: 'put', type: 'json'},
+                 ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":100,"sat":75,"hue":0}, method: 'put', type: 'json'},
                       function(data) {
                       });
                }
              };
              hueMenuObj.allLights.push(thisGroup);
            }
+           console.log('hueMenuObj.allLights');
+           console.log(JSON.stringify(hueMenuObj.allLights));
+           console.log(JSON.stringify(hueMenuObj.allLights[hueMenuObj.allLights.length-1]));
+           console.log(hueMenuObj.allLights.length-1);
            hueMenuObj.Menu.items(0, hueMenuObj.allLights);
          });
     this.Menu.items(0, this.allLights);
