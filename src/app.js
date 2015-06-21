@@ -15,14 +15,6 @@ var hueIP = '192.168.0.18';
 var hueUser = 'newdeveloper';
 var hueApiCall = 'http://'+hueIP+'/api/'+hueUser;
 
-var hueMenuColor = {
-      backgroundColor: 'black',
-      textColor: 'blue',
-      highlightBackgroundColor: 'blue',
-      highlightTextColor: 'black',
-      sections: []
-    };
-
 var coordinates = false;
 var locationinfo = false;
 var units = 'metric';
@@ -246,7 +238,14 @@ var weatherObj = weatherObj || {
 
 var hueSelectLightsObj = hueSelectLightsObj || {
     init: function(){
-    this.Menu = new UI.Menu(hueMenuColor);
+    this.Menu = new UI.Menu({
+      backgroundColor: 'black',
+      textColor: 'blue',
+      highlightBackgroundColor: 'blue',
+      highlightTextColor: 'black',
+      compositing: 'set',
+      sections: []
+    });
     this.Menu.on('select', function(e) {
       hueSelectLightsObj.selectItem(e);
     });
@@ -314,7 +313,13 @@ var hueSelectLightsObj = hueSelectLightsObj || {
 };
 var hueMenuObj = hueMenuObj || {
   init: function(){
-    this.Menu = new UI.Menu(hueMenuColor);
+    this.Menu = new UI.Menu({
+      backgroundColor: 'black',
+      textColor: 'blue',
+      highlightBackgroundColor: 'blue',
+      highlightTextColor: 'black',
+      sections: []
+    });
     this.Menu.on('select', function(e) {
       hueMenuObj.selectItem(e);
     });
@@ -360,7 +365,13 @@ var hueMenuObj = hueMenuObj || {
 
 var hueGroupSettingObj = hueGroupSettingObj || {
     init: function(){
-    this.Menu = new UI.Menu(hueMenuColor);
+    this.Menu = new UI.Menu({
+      backgroundColor: 'black',
+      textColor: 'blue',
+      highlightBackgroundColor: 'blue',
+      highlightTextColor: 'black',
+      sections: []
+    });
     this.Menu.on('select', function(e) {
       hueMenuObj.selectItem(e);
     });
