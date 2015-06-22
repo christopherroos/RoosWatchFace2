@@ -360,7 +360,7 @@ var hueMenuObj = hueMenuObj || {
                  var nextState = (e.item.on) ? false : true;
                  console.log(nextState);
                  hueMenuObj.Menu.item(e.sectionIndex, e.itemIndex, { on: nextState, subtitle: (nextState ? "Turn Off" : "Turn On") } );
-                 ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":100,"sat":75,"hue":0}, method: 'put', type: 'json'},
+                 ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":150,"sat":100,"hue":2000}, method: 'put', type: 'json'},
                       function(data) {
                       });
                }
