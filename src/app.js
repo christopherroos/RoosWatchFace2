@@ -10,6 +10,7 @@
 var UI = require('ui');
 var Vector2 = require('vector2');
 var ajax = require('ajax');
+var Settings = require('settings');
 
 var hueIP = '192.168.0.18';
 var hueUser = 'newdeveloper';
@@ -24,6 +25,40 @@ var hum = 'hum';
 var curSlideItem = 0;
 var nextSlideItem = 1;
 var slideItems = [];
+
+
+
+//Settings.option('group_names', undefined );
+//Settings.option('0', undefined );
+//Settings.option('1', undefined );
+
+var initialized = false;
+var options = {};
+
+Pebble.addEventListener("ready", function() {
+  console.log("ready called!");
+  initialized = true;
+});
+
+Pebble.addEventListener("showConfiguration", function() {
+  console.log("showing configuration");
+  console.log("Options = " + JSON.stringify(options));
+  Pebble.openURL('http://192.168.0.62/GIT/privat/pebble-settings/index.php?'+encodeURIComponent(JSON.stringify(options)));
+});
+
+Pebble.addEventListener("webviewclosed", function(e) {
+  console.log("configuration closed");
+  // webview closed
+  //Using primitive JSON validity and non-empty check
+  if (e.response.charAt(0) == "{" && e.response.slice(-1) == "}" && e.response.length > 5) {
+    options = JSON.parse(decodeURIComponent(e.response));
+    
+    console.log("Options = " + JSON.stringify(options));
+  } else {
+    console.log("Cancelled");
+  }
+});
+
 
 var main = new UI.Window({
   fullscreen: true,
