@@ -1,3 +1,4 @@
+/* jshint undef: true, unused: false */
 /**
  * Welcome to Pebble.js!
  *
@@ -7,9 +8,11 @@
    https://developers.google.com/maps/documentation/javascript/geocoding
  */
 
+
 var UI = require('ui');
 var Vector2 = require('vector2');
 var ajax = require('ajax');
+var Accel = require('ui/accel');
 var Settings = require('settings');
 
 var hueIP = '192.168.0.18';
@@ -26,11 +29,25 @@ var curSlideItem = 0;
 var nextSlideItem = 1;
 var slideItems = [];
 
+// TIMERS AND INTERVALS
+  setInterval(function(){ 
+    locationObj.getLocation();
+    console.log('interval geolocation');
+  }, 60000);
+//////////////////////////
+
+Accel.init();
+Accel.on('tap', function(e) {
+  clt_1.text('Searching');
+  locationObj.getLocation();
+  console.log('Tap event on axis: ' + e.axis + ' and direction: ' + e.direction);
+});
 
 
 //Settings.option('group_names', undefined );
 //Settings.option('0', undefined );
 //Settings.option('1', undefined );
+
 
 var initialized = false;
 var options = {};
@@ -281,21 +298,22 @@ var hueSelectLightsObj = hueSelectLightsObj || {
       compositing: 'set',
       sections: []
     });
+      
     this.Menu.on('select', function(e) {
-      hueSelectLightsObj.selectItem(e);
-    });
+      console.log('hueSelectLightsObj > self.selectItem(e)');
+      this.selectItem(e);
+    }.bind(this));
+      
     this.Menu.on('hide', function(e){
       var newGroup = {name:"Group1", lights: []};
-      for (var key in hueSelectLightsObj.allLights){
-        console.log(JSON.stringify(hueSelectLightsObj.allLights[key]));
-        if (hueSelectLightsObj.allLights[key].added){
+      for (var key in this.allLights){
+        console.log(JSON.stringify(this.allLights[key]));
+        if (this.allLights[key].added){
           console.log('added :)');
-          newGroup.lights.push( hueSelectLightsObj.allLights[key].lightNb );
+          newGroup.lights.push( this.allLights[key].lightNb );
         }
       }
-      
       console.log(JSON.stringify(newGroup));
-      
       newGroup.name = "Lights: "+ newGroup.lights.join();
       var callUrl = hueApiCall+'/groups/';
       ajax({ url: callUrl, method: 'post', data:newGroup, type: 'json'},
@@ -303,8 +321,8 @@ var hueSelectLightsObj = hueSelectLightsObj || {
           console.log(JSON.stringify(data));
           hueMenuObj.updateSections();
         });
-
-    });
+    }.bind(this));
+      
     this.updateSections();
     this.Menu.show();
   },
@@ -327,10 +345,10 @@ var hueSelectLightsObj = hueSelectLightsObj || {
               added: false,
             };
             console.log(JSON.stringify(curLight));
-            hueSelectLightsObj.allLights.push(curLight);
+            this.allLights.push(curLight);
           }
-          hueSelectLightsObj.Menu.items(0, hueSelectLightsObj.allLights);
-        });
+          this.Menu.items(0, this.allLights);
+        }.bind(this));
     
     this.Menu.items(0, this.allLights);
   },
@@ -348,10 +366,11 @@ var hueSelectLightsObj = hueSelectLightsObj || {
         hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-on.png', added: true } );
       }      
     }
-  }
+  }.bind(this)
 };
 var hueMenuObj = hueMenuObj || {
   init: function(){
+    var self = this;
     this.Menu = new UI.Menu({
       backgroundColor: 'black',
       textColor: 'blue',
@@ -360,7 +379,8 @@ var hueMenuObj = hueMenuObj || {
       sections: []
     });
     this.Menu.on('select', function(e) {
-      hueMenuObj.selectItem(e);
+      console.log('hueMenuObj > self.selectItem(e)');
+      self.selectItem(e);
     });
     this.Menu.on('longSelect', function(e){
       console.log(JSON.stringify(e.item));
@@ -516,3 +536,4 @@ main.on('click', 'select', function(e) {
 main.on('click', 'down', function(e) {
   nextBottomSlide();
 });
+
