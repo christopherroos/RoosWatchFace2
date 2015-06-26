@@ -361,12 +361,12 @@ var hueSelectLightsObj = hueSelectLightsObj || {
       //  });
       console.log(JSON.stringify(e.item));
       if (e.item.added){
-        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-off.png', added: false } );
+        this.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-off.png', added: false } );
       }else{
-        hueSelectLightsObj.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-on.png', added: true } );
+        this.Menu.item(e.sectionIndex, e.itemIndex, { icon: 'images/pebble-checkmark-on.png', added: true } );
       }      
     }
-  }.bind(this)
+  }
 };
 var hueMenuObj = hueMenuObj || {
   init: function(){
@@ -536,4 +536,3 @@ main.on('click', 'select', function(e) {
 main.on('click', 'down', function(e) {
   nextBottomSlide();
 });
-
