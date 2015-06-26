@@ -378,19 +378,22 @@ var hueMenuObj = hueMenuObj || {
       highlightTextColor: 'black',
       sections: []
     });
+    
     this.Menu.on('select', function(e) {
       console.log('hueMenuObj > self.selectItem(e)');
-      self.selectItem(e);
-    });
+      this.selectItem(e);
+    }.bind(this));
+    
     this.Menu.on('longSelect', function(e){
       console.log(JSON.stringify(e.item));
       // Delete current group (groupID);
       ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/', method: 'delete', type: 'json'},
         function(data) {
           console.log(JSON.stringify(data));
-          hueMenuObj.updateSections();
-        });
-    });
+          this.updateSections();
+        }.bind(this));
+    }.bind(this));
+    
     this.updateSections();
     this.Menu.show();
   },
@@ -399,7 +402,7 @@ var hueMenuObj = hueMenuObj || {
         title: 'Add Group',
         //icon: 'images/menu_icon.png',
         subtitle: 'Select lights',
-        action: function(){ hueSelectLightsObj.init(); }
+        action: function(){ hueSelectLightsObj.init(); } // Hvad gør vi her?
       }];
     ajax({ url: hueApiCall+'/groups/', method: 'get', type: 'json'},
          function(data){
@@ -414,20 +417,20 @@ var hueMenuObj = hueMenuObj || {
                  console.log(e.item.on);
                  var nextState = (e.item.on) ? false : true;
                  console.log(nextState);
-                 hueMenuObj.Menu.item(e.sectionIndex, e.itemIndex, { on: nextState, subtitle: (nextState ? "Turn Off" : "Turn On") } );
+                 this.Menu.item(e.sectionIndex, e.itemIndex, { on: nextState, subtitle: (nextState ? "Turn Off" : "Turn On") } );
                  ajax({ url: hueApiCall+'/groups/'+e.item.groupID+'/action', data:{on: nextState, "bri":150,"sat":100,"hue":2000}, method: 'put', type: 'json'},
                       function(data) {
                       });
-               }
+               }.bind(this)
              };
-             hueMenuObj.allLights.push(thisGroup);
+             this.allLights.push(thisGroup);
            }
            console.log('hueMenuObj.allLights');
-           console.log(JSON.stringify(hueMenuObj.allLights));
-           console.log(JSON.stringify(hueMenuObj.allLights[hueMenuObj.allLights.length-1]));
-           console.log(hueMenuObj.allLights.length-1);
-           hueMenuObj.Menu.items(0, hueMenuObj.allLights);
-         });
+           console.log(JSON.stringify(this.allLights));
+           console.log(JSON.stringify(this.allLights[this.allLights.length-1]));
+           console.log(this.allLights.length-1);
+           this.Menu.items(0, this.allLights);
+         }.bind(this));
     this.Menu.items(0, this.allLights);
   },
   selectItem: function(e){
